@@ -1,5 +1,5 @@
-#ifndef _HOLBERTON_
-#define _HOLBERTON_
+#ifndef _ascertain_
+#define _ascertain_
 
 #include <stdio.h>
 #include <unistd.h>

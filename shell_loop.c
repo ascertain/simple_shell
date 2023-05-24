@@ -1,4 +1,4 @@
-#include "holberton.h"
+#include "ascertain.h"
 
 /**
  * without_comment - deletes comments from the input

@@ -1,4 +1,4 @@
-#include "holberton.h"
+#include "ascertain.h"
 
 /**
  * swap_char - swaps | and & for non-printed chars
