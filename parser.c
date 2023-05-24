@@ -1,51 +1,64 @@
 #include "shell.h"
 
 /**
- * parse_args - parse arguments
- * @cmd: tokenized string with arguments
- * @del: delimeter
- * @args: argument vector
- * @mod: delimeter method 0-character 1-string
+ * tokenize - parsing user input into arguments
+ *            by splits an array string into tokens using a delimiter.
+ * @str: the string to be tokenized.
+ * @delim: the delimiter used to split the string.
  *
- * Return: none
+ * Return: an array of pointers to the tokens,
+ *         or NULL if an error occurs.
  */
-
-void parse_args(char *cmd, const char *del, char ***args, int mod)
+char **tokenize(char *str, const char *delim)
 {
-	char *tokenized = NULL, **tmp, *trimmed_arg;
-	int index = 0, i;
+	char *token = NULL;
+	char **ret = NULL;
+	int i = 0;
 
-	*args = NULL;
-	tokenized = _strtok(cmd, del, mod);
-	while (tokenized != NULL)
+	token = strtok(str, delim);
+	while (token)
 	{
-		tmp = (char **)_malloc((_arlen(*args) +  2) * sizeof(char *));
-		if (!*args)
-			*args = tmp;
-		else
-		{
-			i = 0;
-			while ((*args)[i])
-			{
-				tmp[i] = _strdup((*args)[i]);
-				i++;
-			}
-			free_pp(*args);
-			*args = tmp;
-		}
-		(*args)[index] = NULL;
-		trimmed_arg = tokenized;
-		if ((tokenized[0] == '"' && tokenized[_strlen(tokenized) - 1] == '"') ||
-				(tokenized[0] == '\'' && tokenized[_strlen(tokenized) - 1] == '\''))
-		{
-			trimmed_arg = _strdup(tokenized + 1);
-			trimmed_arg[_strlen(trimmed_arg) - 1] = '\0';
-		}
-		trim_spaces(&((*args)[index]), trimmed_arg);
-		(*args)[index + 1] = NULL;
-		if (trimmed_arg != tokenized)
-			free(trimmed_arg);
-		tokenized = _strtok(NULL, del, mod);
-		index++;
+		ret = realloc(ret, sizeof(char *) * (i + 1));
+		if (ret == NULL)
+			return (NULL);
+
+		ret[i] = malloc(_strlen(token) + 1);
+		if (!(ret[i]))
+			return (NULL);
+
+		_strcpy(ret[i], token);
+		token = strtok(NULL, delim);
+		i++;
 	}
+	/*increase the size of the array*/
+	ret = realloc(ret, (i + 1) * sizeof(char *));
+	if (!ret)
+		return (NULL);
+
+	ret[i] = NULL;
+	return (ret);
+}
+
+/**
+ * tokenize_input - splits a user input string into tokens with tokenize().
+ * @input: the user input string to be tokenized
+ *
+ * Return: an array of pointers to the tokens, or NULL if an error occurs
+ */
+char **tokenize_input(char *input)
+{
+	char **tokens = NULL;
+	char *tmp = NULL;
+
+	tmp = _strdup(input);
+	if (tmp == NULL)
+	{
+		_puts("Memory allocation error\n");
+		exit(EXIT_FAILURE);
+	}
+
+	tokens = tokenize(tmp, " \t\r\n\a");
+	free(tmp);
+
+	return (tokens);
 }

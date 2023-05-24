@@ -1,40 +1,39 @@
 #include "shell.h"
-#include "error.h"
 
 /**
- * print_error - print error message
- * @prog: command
- * @cmdr: pointer to error
- * @msg: error message
+ * _puts - Prints a string to the standard output stream
+ * @str: The string to print
  *
- * Return: none
+ * Return: Void
  */
-
-void print_error(char *prog, int *cmdr, char *msg)
+void _puts(char *str)
 {
-	char *numcmd;
-	static int *cmdsrun;
-	static char *progname;
+	size_t len;
+	ssize_t num_written;
 
-	if (!msg)
+	len = _strlen(str);
+	num_written = write(STDOUT_FILENO, str, len);
+	if (num_written == -1)
 	{
-		cmdsrun =  cmdr;
-		progname = prog;
-		return;
+		perror("write");
 	}
-	if (!cmdr || !prog)
+}
+
+/**
+ * _puterror - Prints an error message to the standard error stream
+ * @err: The error message to print
+ *
+ * Return: Void
+ */
+void _puterror(char *err)
+{
+	size_t len;
+	ssize_t num_written;
+
+	len = _strlen(err);
+	num_written = write(STDERR_FILENO, err, len);
+	if (num_written == -1)
 	{
-		_write(-1, NULL, 0);
-		_write(2, progname, _strlen(progname) + 1);
-		_write(2, ": ", 2);
-		numcmd = itoa(*cmdsrun);
-		_write(2, numcmd, _strlen(numcmd));
-		free(numcmd);
-		_write(2, ": ", 2);
-		_write(2, prog, _strlen(prog));
-		_write(2, ": ", 2);
-		_write(2, msg, _strlen(msg));
-		_write(2, "\n", 1);
-		_write(2, NULL, 0);
+		perror("write");
 	}
 }
